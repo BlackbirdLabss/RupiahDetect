@@ -1,4 +1,4 @@
-import Wrapper from "@/component/wrapper";
+import Wrapper from "@/components/wrapper";
 export default function Index() {
 
   return (
