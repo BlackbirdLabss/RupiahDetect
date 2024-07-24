@@ -14,6 +14,67 @@ export default function Wrapper() {
       setSelectedImage(file);
     }
   };
+
+  const reducer = (state: any, action: any) => {
+    switch (action.type) {
+      case "SET_DROP_DEPTH":
+        return { ...state, dropDepth: action.dropDepth };
+      case "SET_IN_DROP_ZONE":
+        return { ...state, inDropZone: action.inDropZone };
+      case "ADD_FILE_TO_LIST":
+        return { ...state, fileList: action.fileList };
+      default:
+        return state;
+    }
+  };
+
+  const [data, dispatch] = React.useReducer(reducer, {
+    dropDepth: 0,
+    inDropZone: false,
+    fileList: File,
+  });
+
+  //handle drag & drop
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    dispatch({ type: "SET_DROP_DEPTH", dropDepth: data.dropDepth + 1 });
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    dispatch({ type: "SET_DROP_DEPTH", dropDepth: data.dropDepth - 1 });
+    if (data.dropDepth > 0) return;
+    dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: false });
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    event.dataTransfer.dropEffect = "copy";
+    dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: true });
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let files = event.dataTransfer.files;
+
+    if (files && files.length == 1) {
+      setSelectedImage(files[0]);
+      dispatch({ type: "ADD_FILE_TO_LIST", fileList: files });
+      dispatch({ type: "SET_DROP_DEPTH", dropDepth: 0 });
+      dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: false });
+    } else if (files.length > 1) {
+      console.log("must one image");
+    }
+  };
+
   useEffect(() => {
     if (!selectedImage) {
       return;
@@ -32,11 +93,19 @@ export default function Wrapper() {
   }, [selectedImage]);
 
   return (
-    <div className="flex flex-col justify-center m-10 p-10 bg-white w-[50%] rounded-lg shadow-sm">
+    <div className="flex flex-col justify-center m-10 p-10 bg-white w-full tablet:w-1/2 rounded-lg shadow-sm">
       <div className="text-center text-[#0F0F0F] font-bold text-xl">
         Upload Your Money
       </div>
-      <div className="flex justify-center items-center p-8 border-dashed border-2 w-full border-[#384eb7] border-opacity-30 bg-[#f8f8ff] rounded-md mt-8">
+      <div
+        className={`${
+          data.inDropZone ? "drag-drop-zone inside-drag-area" : "drag-drop-zone"
+        } "flex justify-center items-center p-8 border-dashed border-2 w-full border-[#384eb7] border-opacity-30 bg-[#f8f8ff] rounded-md mt-8`}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+      >
         {selectedImage && previewUrl ? (
           <Image
             src={previewUrl}
