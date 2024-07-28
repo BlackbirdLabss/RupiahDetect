@@ -62,16 +62,26 @@ export default function Wrapper() {
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
-
+    const allowedExtension = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/gif",
+      "image/bmp",
+    ];
     let files = event.dataTransfer.files;
 
-    if (files && files.length == 1) {
-      setSelectedImage(files[0]);
-      dispatch({ type: "ADD_FILE_TO_LIST", fileList: files });
-      dispatch({ type: "SET_DROP_DEPTH", dropDepth: 0 });
-      dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: false });
-    } else if (files.length > 1) {
-      console.log("must one image");
+    if (allowedExtension.indexOf(files[0].type) > -1) {
+      if (files && files.length == 1) {
+        setSelectedImage(files[0]);
+        dispatch({ type: "ADD_FILE_TO_LIST", fileList: files });
+        dispatch({ type: "SET_DROP_DEPTH", dropDepth: 0 });
+        dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: false });
+      } else if (files.length > 1) {
+        console.log("Only one image allowed");
+      }
+    } else {
+      console.log("Only format image allowed");
     }
   };
 
@@ -107,14 +117,19 @@ export default function Wrapper() {
         onDragLeave={handleDragLeave}
       >
         {selectedImage && previewUrl ? (
-          <Image
-            src={previewUrl}
-            alt="upload icon"
-            width={0}
-            height={0}
-            sizes="100vw"
-            style={{ width: "100%", height: "auto" }} // optional
-          />
+          <div className="relative p-2">
+            <Image
+              src={previewUrl}
+              alt="upload icon"
+              width={0}
+              height={0}
+              sizes="100vw"
+              style={{ width: "100%", height: "auto" }} // optional
+            />
+            <circle className="flex absolute top-0 right-0 w-6 h-6 justify-center items-center bg-white rounded-full shadow-lg">
+              <span className="text-red text-xs">X</span>
+            </circle>
+          </div>
         ) : (
           <div className="flex flex-col justify-center items-center">
             <Image

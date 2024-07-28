@@ -28,6 +28,7 @@ const config: Config = {
       'background': '#f6f6f6',
       'primary': '#483ea8',
       'white': '#ffffff',
+      'red': '#ef4444'
     }
   },
   plugins: [],
