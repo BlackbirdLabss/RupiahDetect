@@ -15,6 +15,12 @@ export default function Wrapper() {
     }
   };
 
+  const handleDeleteImage = (event: React.MouseEvent<HTMLDivElement>) => {
+    if(event.type == "click") {
+      setSelectedImage(null)
+    }
+  }
+
   const reducer = (state: any, action: any) => {
     switch (action.type) {
       case "SET_DROP_DEPTH":
@@ -31,7 +37,7 @@ export default function Wrapper() {
   const [data, dispatch] = React.useReducer(reducer, {
     dropDepth: 0,
     inDropZone: false,
-    fileList: File,
+    fileList: null,
   });
 
   //handle drag & drop
@@ -117,7 +123,7 @@ export default function Wrapper() {
         onDragLeave={handleDragLeave}
       >
         {selectedImage && previewUrl ? (
-          <div className="relative p-2">
+          <div className="relative p-3">
             <Image
               src={previewUrl}
               alt="upload icon"
@@ -126,9 +132,12 @@ export default function Wrapper() {
               sizes="100vw"
               style={{ width: "100%", height: "auto" }} // optional
             />
-            <circle className="flex absolute top-0 right-0 w-6 h-6 justify-center items-center bg-white rounded-full shadow-lg">
-              <span className="text-red text-xs">X</span>
-            </circle>
+            <div 
+            className="flex absolute top-0 right-0 w-8 h-8 justify-center items-center bg-white rounded-full shadow-2xl hover:shadow-md"
+            onClick={handleDeleteImage}
+            >
+              <span className="text-red text-xs cursor-pointer">X</span>
+            </div>
           </div>
         ) : (
           <div className="flex flex-col justify-center items-center">
