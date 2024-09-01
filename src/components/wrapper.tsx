@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { speak } from "../helperFunctions/textToSpeech";
 
 export default function Wrapper() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -16,10 +17,14 @@ export default function Wrapper() {
   };
 
   const handleDeleteImage = (event: React.MouseEvent<HTMLDivElement>) => {
-    if(event.type == "click") {
-      setSelectedImage(null)
+    if (event.type == "click") {
+      setSelectedImage(null);
     }
-  }
+  };
+
+  const handleSendImage = () => {
+    speak("Start Detect");
+  };
 
   const reducer = (state: any, action: any) => {
     switch (action.type) {
@@ -132,9 +137,12 @@ export default function Wrapper() {
               sizes="100vw"
               style={{ width: "100%", height: "auto" }} // optional
             />
-            <div 
-            className="flex absolute top-0 right-0 w-8 h-8 justify-center items-center bg-white rounded-full shadow-2xl hover:shadow-md"
-            onClick={handleDeleteImage}
+            <div
+              className="flex absolute top-0 right-0 w-8 h-8 justify-center items-center bg-white rounded-full shadow-2xl hover:shadow-md"
+              onClick={handleDeleteImage}
+              onMouseEnter={() => {
+                speak("Delete Image");
+              }}
             >
               <span className="text-red text-xs cursor-pointer">X</span>
             </div>
@@ -168,7 +176,10 @@ export default function Wrapper() {
         )}
       </div>
       <div className="mt-5 font-bold text-sm text-[#676767]">Uploading...</div>
-      <button className="bg-primary text-white mt-8 p-3 rounded-md">
+      <button
+        className="bg-primary text-white mt-8 p-3 rounded-md"
+        onClick={handleSendImage}
+      >
         START DETECT
       </button>
     </div>
