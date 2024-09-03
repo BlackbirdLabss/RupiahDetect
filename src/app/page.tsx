@@ -14,7 +14,7 @@ export default function Page() {
           target="_blank"
         >
           <b>
-            Blackbird<span className="text-[#2da1fc]">Labss</span>
+            <span className="text-[#000000]">Blackbird</span><span className="text-[#2da1fc]">Labss</span>
           </b>
         </a>
       </footer>
