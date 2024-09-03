@@ -9,6 +9,7 @@ export default function UploadImage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = React.useState<{ denomination: string; is_money_detected: boolean; max_val: number } | null>(null);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -28,7 +29,7 @@ export default function UploadImage() {
   const handlePostImage = React.useCallback(async (file: File | null) => {
     try {
       setLoading(true);
-      postImage(file);
+      postImage(file).then(result => setResult(result));
     } catch (error) {
       console.log("Something error");
     } finally {
@@ -138,6 +139,7 @@ export default function UploadImage() {
       <div className="text-center text-[#0F0F0F] font-bold text-xl">
         Upload your money
       </div>
+      <div className="text-center ">Uang anda: {result?.denomination}</div>
       <div
         className={`${
           data.inDropZone ? "drag-drop-zone inside-drag-area" : "drag-drop-zone"

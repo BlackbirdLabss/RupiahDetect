@@ -1,6 +1,6 @@
 export const postImage = async (file: File | null) => {
   if (!file) {
-    return;
+    return null; // Explicitly return null if no file is provided
   }
 
   const formData = new FormData();
@@ -14,7 +14,14 @@ export const postImage = async (file: File | null) => {
         body: formData,
       }
     );
-    console.log(response);
+    
+    if (!response.ok) {
+      throw new Error("Failed to upload image");
+    }
+
+    const data = await response.json();
+    console.log(data)
+    return data; // Return the parsed JSON data
   } catch (error) {
     console.error(error);
     throw new Error("Failed to detect money");
