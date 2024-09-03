@@ -139,7 +139,7 @@ export default function UploadImage() {
       <div className="text-center text-[#0F0F0F] font-bold text-xl">
         Upload your money
       </div>
-      <div className="text-center text-[#000000]">Uang anda: {result?.denomination}</div>
+      <div className="text-center text-black">Uang anda: {result?.denomination}</div>
       <div
         className={`${
           data.inDropZone ? "drag-drop-zone inside-drag-area" : "drag-drop-zone"
