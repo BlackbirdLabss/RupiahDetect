@@ -2,10 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { speak } from "../helperFunctions/textToSpeech";
+import DragAndDrop from "../components/drag-and-drop";
+import { postImage } from "../services/post-image";
 
-export default function Wrapper() {
+export default function UploadImage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -22,8 +25,25 @@ export default function Wrapper() {
     }
   };
 
-  const handleSendImage = () => {
-    speak("Start Detect");
+  const handlePostImage = React.useCallback(async (file: File | null) => {
+    try {
+      setLoading(true);
+      postImage(file);
+    } catch (error) {
+      console.log("Something error");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleDetectImage = () => {
+    if (selectedImage == null) {
+      speak("Image must be uploaded");
+    } else {
+      speak("Start Detect");
+
+      handlePostImage(selectedImage);
+    }
   };
 
   const reducer = (state: any, action: any) => {
@@ -116,7 +136,7 @@ export default function Wrapper() {
   return (
     <div className="flex flex-col justify-center m-10 p-10 bg-white w-full tablet:w-1/2 rounded-lg shadow-sm">
       <div className="text-center text-[#0F0F0F] font-bold text-xl">
-        Upload Your Money
+        Upload your money
       </div>
       <div
         className={`${
@@ -148,37 +168,19 @@ export default function Wrapper() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col justify-center items-center">
-            <Image
-              src={`/upload-icon.png`}
-              alt="upload icon"
-              width="100"
-              height="59"
-            />
-
-            <div className="text-base font-bold mt-6">
-              <span className="text-[#0f0f0f]">Drag & drop files or </span>
-              <div className="relative inline-block">
-                <span className="text-primary underline relative">Browse</span>
-                <input
-                  className="absolute top-0 left-0 opacity-0 w-full h-full"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                />
-              </div>
-            </div>
-
-            <div className="text-xs text-[#676767]">
-              Format berupa: JPEG, PNG, JPG
-            </div>
-          </div>
+          <DragAndDrop handleImageUpload={handleImageUpload} />
         )}
       </div>
-      <div className="mt-5 font-bold text-sm text-[#676767]">Uploading...</div>
+      {loading && (
+        <div className="mt-5 font-bold text-sm text-[#676767]">
+          Uploading...
+        </div>
+      )}
       <button
-        className="bg-primary text-white mt-8 p-3 rounded-md"
-        onClick={handleSendImage}
+        className={`${
+          selectedImage == null ? "bg-primary/50" : "bg-primary"
+        } text-white mt-8 p-3 rounded-md`}
+        onClick={handleDetectImage}
       >
         START DETECT
       </button>
