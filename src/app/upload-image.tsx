@@ -33,7 +33,10 @@ export default function UploadImage() {
 
   const handlePostImage = React.useCallback(async (file: File | null) => {
     try {
-      postImage(file, setLoading).then((result) => setResult(result));
+      postImage(file, setLoading).then((result) => {
+        setResult(result);
+        speak("Your money: " + result?.denomination);
+      });
     } catch (error) {
       console.log("Something error");
     }
@@ -139,10 +142,14 @@ export default function UploadImage() {
   return (
     <div className="flex flex-col justify-center m-10 p-10 bg-white w-full mobile:w-96 rounded-lg shadow-sm">
       <div className="text-center text-[#0F0F0F] font-bold text-xl">
-        Upload your money
+        Upload Your Money💵
       </div>
       <div className="text-center text-black">
-        Uang anda: {result?.denomination}
+        <span>Result:</span>{" "}
+        <span className="font-bold">
+          {" "}
+          Rp. {result == null ? "0" : result?.denomination}
+        </span>
       </div>
       <div
         className={`${
