@@ -4,12 +4,17 @@ import Image from "next/image";
 import { speak } from "../helperFunctions/textToSpeech";
 import DragAndDrop from "../components/drag-and-drop";
 import { postImage } from "../services/post-image";
+import { Loading } from "../components/loading";
 
 export default function UploadImage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = React.useState<{ denomination: string; is_money_detected: boolean; max_val: number } | null>(null);
+  const [result, setResult] = React.useState<{
+    denomination: string;
+    is_money_detected: boolean;
+    max_val: number;
+  } | null>(null);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -28,12 +33,9 @@ export default function UploadImage() {
 
   const handlePostImage = React.useCallback(async (file: File | null) => {
     try {
-      setLoading(true);
-      postImage(file).then(result => setResult(result));
+      postImage(file, setLoading).then((result) => setResult(result));
     } catch (error) {
       console.log("Something error");
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -135,11 +137,13 @@ export default function UploadImage() {
   }, [selectedImage]);
 
   return (
-    <div className="flex flex-col justify-center m-10 p-10 bg-white w-full tablet:w-1/2 rounded-lg shadow-sm">
+    <div className="flex flex-col justify-center m-10 p-10 bg-white w-full mobile:w-96 rounded-lg shadow-sm">
       <div className="text-center text-[#0F0F0F] font-bold text-xl">
         Upload your money
       </div>
-      <div className="text-center ">Uang anda: {result?.denomination}</div>
+      <div className="text-center text-black">
+        Uang anda: {result?.denomination}
+      </div>
       <div
         className={`${
           data.inDropZone ? "drag-drop-zone inside-drag-area" : "drag-drop-zone"
@@ -174,13 +178,19 @@ export default function UploadImage() {
         )}
       </div>
       {loading && (
-        <div className="mt-5 font-bold text-sm text-[#676767]">
-          Uploading...
+        <div className="flex gap-2 items-center mt-5 font-bold text-sm text-[#676767]">
+          <Loading
+            bgColor="gray-200"
+            fgColor="primary"
+            width={8}
+            height={8}
+          />
+          <div>Uploading...</div>
         </div>
       )}
       <button
         className={`${
-          selectedImage == null ? "bg-primary/50" : "bg-primary"
+          selectedImage == null || loading ? "bg-primary/50" : "bg-primary"
         } text-white mt-8 p-3 rounded-md`}
         onClick={handleDetectImage}
       >

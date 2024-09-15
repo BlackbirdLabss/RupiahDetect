@@ -9,6 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
+        
+        'mobile': '390px',
+        // => @media (min-width: 390px) { ... }
+
         'tablet': '640px',
         // => @media (min-width: 640px) { ... }
   
@@ -28,7 +32,8 @@ const config: Config = {
       'background': '#f6f6f6',
       'primary': '#483ea8',
       'white': '#ffffff',
-      'red': '#ef4444'
+      'red': '#ef4444',
+      'black': '#000000'
     }
   },
   plugins: [],
