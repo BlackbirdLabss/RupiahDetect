@@ -9,6 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
+        
+        'mobile': '390px',
+        // => @media (min-width: 390px) { ... }
+
         'tablet': '640px',
         // => @media (min-width: 640px) { ... }
   
