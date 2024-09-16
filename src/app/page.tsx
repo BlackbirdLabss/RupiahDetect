@@ -1,4 +1,4 @@
-import UploadImage from "./upload-image";
+import Main from "./main";
 import React from "react";
 export default function Page() {
   return (
@@ -6,18 +6,7 @@ export default function Page() {
       data-testid="main"
       className="flex min-h-screen flex-col items-center justify-center tablet:p-24 bg-background"
     >
-      <UploadImage />
-      <footer className="flex justify-center text-black items-end w-full h-24 p-3 absolute bottom-0">
-        created by{"\u00A0"}
-        <a
-          href="https://github.com/BlackbirdLabss"
-          target="_blank"
-        >
-          <b>
-            <span className="text-black">Blackbird</span><span className="text-[#2da1fc]">Labss</span>
-          </b>
-        </a>
-      </footer>
+      <Main />
     </main>
   );
 }
