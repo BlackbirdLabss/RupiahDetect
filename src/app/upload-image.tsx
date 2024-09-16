@@ -142,7 +142,7 @@ export default function UploadImage() {
   return (
     <div className="flex flex-col justify-center m-10 p-10 bg-white w-full mobile:w-96 rounded-lg shadow-sm">
       <div className="text-center text-[#0F0F0F] font-bold text-xl">
-        Upload Your Money💵
+        💵 Upload Your Money 💵 
       </div>
       <div className="text-center text-black">
         <span>Result:</span>{" "}

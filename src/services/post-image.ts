@@ -27,7 +27,6 @@ export const postImage = async (
     }
 
     const data = await response.json();
-    console.log(data);
     return data; // Return the parsed JSON data
   } catch (error) {
     console.error(error);
