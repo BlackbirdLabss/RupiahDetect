@@ -19,7 +19,7 @@ function DragAndDrop({
         />
 
         <div className="text-base font-bold mt-6">
-          <span className="text-[#0f0f0f]">Drag & drop files or </span>
+          <span className="text-[#0f0f0f]">Drag & Drop File or </span>
           <div className="relative inline-block">
             <span className="text-primary underline relative">Browse</span>
             <input
@@ -32,7 +32,7 @@ function DragAndDrop({
         </div>
 
         <div className="text-xs text-[#676767]">
-          Format berupa: JPEG, PNG, JPG
+        The formats are: JPEG, PNG, JPG
         </div>
       </div>
     </>
