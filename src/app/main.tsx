@@ -5,11 +5,16 @@ import { speak } from "../helperFunctions/textToSpeech";
 import DragAndDrop from "../components/drag-and-drop";
 import { postImage } from "../services/post-image";
 import { Loading } from "../components/loading";
+import { Alert } from "../components/alert";
 
-export default function UploadImage() {
+export default function Main() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = React.useState({
+    message: "There is an error",
+    isShow: false,
+  });
   const [result, setResult] = React.useState<{
     denomination: string;
     is_money_detected: boolean;
@@ -115,14 +120,24 @@ export default function UploadImage() {
         dispatch({ type: "SET_DROP_DEPTH", dropDepth: 0 });
         dispatch({ type: "SET_IN_DROP_ZONE", inDropZone: false });
       } else if (files.length > 1) {
-        console.log("Only one image allowed");
+        setAlert({ message: "Only one image is allowed!", isShow: true });
       }
     } else {
-      console.log("Only format image allowed");
+      setAlert({
+        message: "Only format JPEG, PNG, JPG image is allowed!",
+        isShow: true,
+      });
     }
   };
 
   useEffect(() => {
+    setTimeout(() => {
+      setAlert({
+        message: "Only format JPEG, PNG, JPG image is allowed!",
+        isShow: false,
+      });
+    }, 3000);
+
     if (!selectedImage) {
       return;
     }
@@ -137,72 +152,98 @@ export default function UploadImage() {
     };
     fileReader.readAsDataURL(selectedImage);
     formData.append("image", selectedImage);
-  }, [selectedImage]);
+  }, [selectedImage, alert.isShow]);
 
   return (
-    <div className="flex flex-col justify-center m-10 p-10 bg-white w-full mobile:w-96 rounded-lg shadow-sm">
-      <div className="text-center text-[#0F0F0F] font-bold text-xl">
-        💵 Upload Your Money 💵 
-      </div>
-      <div className="text-center text-black">
-        <span>Result:</span>{" "}
-        <span className="font-bold">
-          {" "}
-          Rp. {result == null ? "0" : result?.denomination}
-        </span>
-      </div>
-      <div
-        className={`${
-          data.inDropZone ? "drag-drop-zone inside-drag-area" : "drag-drop-zone"
-        } "flex justify-center items-center p-8 border-dashed border-2 w-full border-[#384eb7] border-opacity-30 bg-[#f8f8ff] rounded-md mt-8`}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-      >
-        {selectedImage && previewUrl ? (
-          <div className="relative p-3">
-            <Image
-              src={previewUrl}
-              alt="upload icon"
-              width={0}
-              height={0}
-              sizes="100vw"
-              style={{ width: "100%", height: "auto" }} // optional
-            />
-            <div
-              className="flex absolute top-0 right-0 w-8 h-8 justify-center items-center bg-white rounded-full shadow-2xl hover:shadow-md"
-              onClick={handleDeleteImage}
-              onMouseEnter={() => {
-                speak("Delete Image");
-              }}
-            >
-              <span className="text-red text-xs cursor-pointer">X</span>
-            </div>
-          </div>
-        ) : (
-          <DragAndDrop handleImageUpload={handleImageUpload} />
-        )}
-      </div>
-      {loading && (
-        <div className="flex gap-2 items-center mt-5 font-bold text-sm text-[#676767]">
-          <Loading
-            bgColor="gray-200"
-            fgColor="primary"
-            width={8}
-            height={8}
-          />
-          <div>Uploading...</div>
-        </div>
+    <>
+      {alert.isShow && (
+        <Alert
+          bgColor="bg-red-100"
+          borderColor="border-red-400"
+          textColor="text-red-700"
+          message={alert?.message}
+        />
       )}
-      <button
-        className={`${
-          selectedImage == null || loading ? "bg-primary/50" : "bg-primary"
-        } text-white mt-8 p-3 rounded-md`}
-        onClick={handleDetectImage}
-      >
-        START DETECT
-      </button>
-    </div>
+      <div className="flex flex-col justify-center m-10 p-10 bg-white w-full mobile:w-96 rounded-lg shadow-sm">
+        <div className="text-center text-[#0F0F0F] font-bold text-xl">
+          💵 Upload Your Money 💵
+        </div>
+        <div className="text-center text-black">
+          <span>Result:</span>{" "}
+          <span className="font-bold">
+            {" "}
+            Rp. {result == null ? "0" : result?.denomination}
+          </span>
+        </div>
+        <div
+          className={`${
+            data.inDropZone
+              ? "drag-drop-zone inside-drag-area"
+              : "drag-drop-zone"
+          } "flex justify-center items-center p-8 border-dashed border-2 w-full border-[#384eb7] border-opacity-30 bg-[#f8f8ff] rounded-md mt-8`}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+        >
+          {selectedImage && previewUrl ? (
+            <div className="relative p-3">
+              <Image
+                src={previewUrl}
+                alt="upload icon"
+                width={0}
+                height={0}
+                sizes="100vw"
+                style={{ width: "100%", height: "auto" }} // optional
+              />
+              <div
+                className="flex absolute top-0 right-0 w-8 h-8 justify-center items-center bg-white rounded-full shadow-2xl hover:shadow-md"
+                onClick={handleDeleteImage}
+                onMouseEnter={() => {
+                  speak("Delete Image");
+                }}
+              >
+                <span className="text-red-600 text-sm font-semibold cursor-pointer">
+                  X
+                </span>
+              </div>
+            </div>
+          ) : (
+            <DragAndDrop handleImageUpload={handleImageUpload} />
+          )}
+        </div>
+        {loading && (
+          <div className="flex gap-2 items-center mt-5 font-bold text-sm text-[#676767]">
+            <Loading
+              bgColor="gray-200"
+              fgColor="primary"
+              width={8}
+              height={8}
+            />
+            <div>Uploading...</div>
+          </div>
+        )}
+        <button
+          className={`${
+            selectedImage == null || loading ? "bg-primary/50" : "bg-primary"
+          } text-white mt-8 p-3 rounded-md`}
+          onClick={handleDetectImage}
+        >
+          START DETECT
+        </button>
+      </div>
+      <footer className="flex justify-center text-black items-end w-full h-24 p-3 absolute bottom-0">
+        created by{"\u00A0"}
+        <a
+          href="https://github.com/BlackbirdLabss"
+          target="_blank"
+        >
+          <b>
+            <span className="text-black">Blackbird</span>
+            <span className="text-[#2da1fc]">Labss</span>
+          </b>
+        </a>
+      </footer>
+    </>
   );
 }
