@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./RupiahDetect
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    #volumes: 
+      #- ./RupiahDetect:/app  # Map local folder to container
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./money-detection
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    #volumes:
+     # - ./money-detection:/app  # Map local folder to container
+    working_dir: /app
+    environment:
+      - FLASK_ENV=development
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

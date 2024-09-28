@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./RupiahDetect
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    working_dir: /app
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+ 
+  backend:
+    build:
+      context: ./money-detection
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    working_dir: /app
+    environment:
+      - FLASK_ENV=production
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
